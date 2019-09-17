@@ -1,0 +1,17 @@
+E:\Project\AccountBookManage\Login\bin\Debug\AccountBookManage.dll
+E:\Project\AccountBookManage\Login\bin\Debug\AccountBookManage.pdb
+E:\Project\AccountBookManage\Login\bin\Debug\BASECOM.dll
+E:\Project\AccountBookManage\Login\bin\Debug\COMMON.dll
+E:\Project\AccountBookManage\Login\bin\Debug\log4net.dll
+E:\Project\AccountBookManage\Login\bin\Debug\NPOI.OOXML.dll
+E:\Project\AccountBookManage\Login\bin\Debug\System.Data.SQLite.dll
+E:\Project\AccountBookManage\Login\bin\Debug\NPOI.dll
+E:\Project\AccountBookManage\Login\bin\Debug\Newtonsoft.Json.dll
+E:\Project\AccountBookManage\Login\bin\Debug\BASE.dll
+E:\Project\AccountBookManage\Login\bin\Debug\ICSharpCode.SharpZipLib.dll
+E:\Project\AccountBookManage\Login\bin\Debug\NPOI.OpenXmlFormats.dll
+E:\Project\AccountBookManage\Login\bin\Debug\NPOI.OpenXml4Net.dll
+E:\Project\AccountBookManage\Login\bin\Debug\COMMON.pdb
+E:\Project\AccountBookManage\Login\obj\Debug\Login.csprojResolveAssemblyReference.cache
+E:\Project\AccountBookManage\Login\obj\Debug\AccountBookManage.dll
+E:\Project\AccountBookManage\Login\obj\Debug\AccountBookManage.pdb
