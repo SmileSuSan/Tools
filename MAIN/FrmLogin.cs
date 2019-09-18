@@ -48,8 +48,6 @@ namespace SC
 
         ContextMenuStrip cms = new ContextMenuStrip(); //批量修改数据菜单
 
-        bool isUpdate = false;
-
         /// <summary>
         /// 重构始化页面
         /// </summary>
@@ -86,7 +84,7 @@ namespace SC
                 }
                 #endregion
 
-                //DevExpress控件本地化
+                #region DevExpress控件本地化
                 DocumentManagerLocalizer.Active = new ChineseDocumentManagerLocalizer();
                 Localizer.Active = new ChineseXtraEditorsLocalizer();
                 BarLocalizer.Active = new ChineseXtreBarsLocalizer();
@@ -96,7 +94,9 @@ namespace SC
                 DevExpress.UserSkins.BonusSkins.Register();
                 DevExpress.Skins.SkinManager.EnableFormSkins();
                 DevExpress.Skins.SkinManager.EnableMdiFormSkins();
+                #endregion
 
+                //设置默认样式
                 UserLookAndFeel.Default.SetDefaultStyle();
 
                 #region 创建数据库连接
@@ -157,7 +157,6 @@ namespace SC
 
                 #endregion
 
-                rad_NetWeb.SelectedIndex = 0;
 
                 sh = new SQLiteBusiness(string.Format(@"Data Source={0}SysInfo.db", AppDomain.CurrentDomain.BaseDirectory.ToString()));
                 sh.CreateDB();
@@ -1038,284 +1037,6 @@ namespace SC
 
 
             return true;
-        }
-
-        /// <summary>
-        /// 检查更新
-        /// </summary>
-        /// <returns></returns>
-        int CheckForUpdate()
-        {
-            //更新标识
-            int isUpdate = 0;
-            try
-            {
-                //ftp用户名
-                string ftpUser = GetSysParam("FtpUser");
-                BussHelper.FileUser = ftpUser;
-                //ftp密码
-                string ftpPassword = GetSysParam("FtpPassword");
-                BussHelper.FilePassword = ftpPassword;
-                if (string.IsNullOrWhiteSpace(ftpUser) || string.IsNullOrWhiteSpace(ftpPassword))
-                {
-                    CloseWait();
-                    if (XtraMessageBox.Show("获取升级用户密码信息失败，请重新下载更新！", "系统提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
-                    {
-                        CheckForUpdate();
-                        isUpdate = 9;
-                        return isUpdate;
-                    }
-                    else
-                    {
-                        isUpdate = 9;
-                        return isUpdate;
-                    }
-
-                }
-                DataTable dtFiles = null;
-
-                //根据员工编码获取可用更新
-                string id = BaseInfoCommon.CurrentUser.EMPLOYEE_CODE.ToString();
-                Dictionary<string, string> dis = new Dictionary<string, string>();
-                dis.Add("U_FLAG", "1");
-                dis.Add("UPDATE_DESC", "电信");
-
-                //if (rad_NetWeb.Text == "电信" || rad_NetWeb.Text == "联通")
-                //{
-                //    dis.Add("UPDATE_DESC", "电信");
-                //}
-                //else if (rad_NetWeb.Text == "智能")
-                //{
-                //    dis.Add("UPDATE_DESC", "联通");
-                //}
-                //else
-                //{
-                //    dis.Add("UPDATE_DESC", rad_NetWeb.Text);
-                //}
-
-                string strJson = JsonConvertHelper.DicToTableJson(dis, "T_BASE_AUTO_UPDATE_QRY");
-
-                SetWaitDescription("获取更新文件");
-                DataSet dsResult = HttpHelper.TransData(ServerName.K9, "qryT_BASE_AUTO_UPDATE", strJson);
-
-                if (dsResult != null && dsResult.Tables["ErrorList"].Rows[0]["ErrorCode"].ToString() == "200")
-                {
-                    if (dsResult.Tables.Count > 1)
-                    {
-                        if (dsResult.Tables["T_BASE_AUTO_UPDATE"].Rows.Count > 0)
-                        {
-                            dtFiles = dsResult.Tables["T_BASE_AUTO_UPDATE"];
-                        }
-                    }
-                }
-
-                //获取需要下载更新的文件列表
-                DataTable fileList = null;
-
-                if (dtFiles != null && dtFiles.Rows.Count > 0)
-                {
-                    fileList = GetDownLoadFiles(dtFiles);
-                }
-
-                DataTable dtUpdateRecord = dtFiles.Clone();
-
-                if (Utility.GetRowCount(fileList) > 0 || Utility.GetRowCount(dtUpdateRecord) > 0)
-                {
-                    isUpdate = 3;
-
-                    DataRow drGetUpdate = null;
-
-                    if (Utility.GetRowCount(fileList) > 0)
-                    {
-                        foreach (DataRow dr in fileList.Rows)
-                        {
-                            if (dr["FILE_PATH"].ToString().Trim().Equals("Update.exe"))
-                            {
-                                drGetUpdate = dr;
-                            }
-                            else
-                            {
-                                dtUpdateRecord.ImportRow(dr);
-                            }
-                        }
-                    }
-                    if (drGetUpdate != null)
-                    {
-                        string downloadPath = Path.Combine(Application.StartupPath + "\\Update");
-                        string backUpPath = Path.Combine(Application.StartupPath + "\\Backup");
-
-                        if (!Directory.Exists(downloadPath))
-                        {
-
-                            Directory.CreateDirectory(downloadPath);
-                        }
-                        else
-                        {
-                            Directory.Delete(downloadPath, true);
-                            Directory.CreateDirectory(downloadPath);
-                        }
-
-                        if (!Directory.Exists(backUpPath))
-                            Directory.CreateDirectory(backUpPath);
-
-                        //下载成功标识
-                        bool flg = true;
-                        string url = string.Empty;
-
-                        url = drGetUpdate["DOWN_ADDRESS"].ToString();
-
-                        string fileName = "UPDATE.zip";
-
-                        /// <summary>
-                        /// 下载DLL
-                        /// </summary>
-                        FileStream outputUPdate = new FileStream(Path.Combine(downloadPath, fileName), FileMode.Create);
-
-                        try
-                        {
-                            Thread.Sleep(100);
-                            HttpHelper http = new HttpHelper();
-                            flg = http.TransData(url, outputUPdate, ftpUser, ftpPassword);
-                            outputUPdate.Close();
-                        }
-                        catch (Exception ex)
-                        {
-                            LogHelper.Error("更新的下载UPDATE.EXE方法(FileDown)报错", ex);
-                            flg = false;
-                            outputUPdate.Close();
-                        }
-
-                        if (flg == false)
-                        {
-                            CloseWait();
-                            if (XtraMessageBox.Show("升级更新程序失败，请重新下载更新！", "系统提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
-                            {
-                                CheckForUpdate();
-                                isUpdate = 9;
-                                return isUpdate;
-                            }
-                            else
-                            {
-                                isUpdate = 9;
-                                return isUpdate;
-                            }
-                        }
-                        else
-                        {
-                            try
-                            {
-                                bool blZip = UnMakeZipFile(downloadPath + "\\" + fileName, downloadPath);
-                                if (blZip)//解压成功
-                                {
-                                    if (File.Exists(downloadPath + "\\" + fileName))
-                                    {
-                                        //如果存在则删除
-                                        File.Delete(downloadPath + "\\" + fileName);
-                                    }
-
-                                    DirectoryInfo dir = new DirectoryInfo(downloadPath);
-                                    if (dir.Exists)
-                                    {
-                                        foreach (FileInfo fileitem in dir.GetFiles())
-                                        {
-                                            string item = fileitem.Name;
-
-                                            string excutePath = Path.Combine(Application.StartupPath, item);
-                                            if (File.Exists(excutePath))
-                                            {
-                                                File.Replace(Path.Combine(downloadPath, item), excutePath, Path.Combine(backUpPath, item));
-                                            }
-                                            else
-                                            {
-                                                File.Move(Path.Combine(downloadPath, item), excutePath);
-                                            }
-
-                                            File.Delete(fileitem.FullName);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    CloseWait();
-                                    XtraMessageBox.Show("压缩UPDATE.EXE程序失败", "系统提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-                                    isUpdate = 9;
-                                    return isUpdate;
-                                }
-                            }
-                            catch
-                            {
-                                CloseWait();
-                                if (XtraMessageBox.Show("升级更新程序失败，请重新下载更新！", "系统提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
-                                {
-                                    CheckForUpdate();
-                                    isUpdate = 9;
-                                    return isUpdate;
-                                }
-                                else
-                                {
-                                    isUpdate = 9;
-                                    return isUpdate;
-                                }
-                            }
-                        }
-                    }
-
-                    if (ValidateWin() == 0)
-                    {
-                        return 11;
-                    }
-
-                    //未找到文件
-                    if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory.ToString() + "\\UPDATE.exe"))
-                    {
-                        CloseWait();
-                        XtraMessageBox.Show("未能找到升级程序，请联系管理员！", "系统提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return 11;
-                    }
-
-                    //组装更新文件信息列表保存到本地库
-                    if (dtUpdateRecord != null && dtUpdateRecord.Rows.Count > 0)
-                    {
-
-                        sh.AddNewTable(dtUpdateRecord, "UPDATETABLE");
-
-                        string dtJson = JsonConvertHelper.ConvertDataTableToJson(dtUpdateRecord);
-
-                        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(dtJson);
-
-                        string json = Convert.ToBase64String(bytes);
-
-
-                        //强制更新时不提示直接下载
-                        string param = string.Format("{0} {1} {2} {3} {4} {5}", json, ftpUser, ftpPassword, username, password, site);
-                        System.Diagnostics.Process process = new Process();
-                        process.StartInfo.FileName = AppDomain.CurrentDomain.BaseDirectory.ToString() + "\\UPDATE.exe";
-                        process.StartInfo.Arguments = param;
-                        process.StartInfo.UseShellExecute = false;
-                        process.Start();
-
-                        Environment.Exit(0);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                CloseWait();
-                LogHelper.Error(" PC端检查更新错误日志记录:", ex);
-
-                if (XtraMessageBox.Show("获取升级更新失败,错误信息为：" + ex.Message + "，请重新下载更新！", "系统提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
-                {
-                    CheckForUpdate();
-                    isUpdate = 9;
-                    return isUpdate;
-                }
-                else
-                {
-                    isUpdate = 11;
-                    return isUpdate;
-                }
-            }
-            return isUpdate;
         }
 
         /// <summary>
@@ -2269,7 +1990,5 @@ namespace SC
         }
 
         #endregion
-
-
     }
 }
