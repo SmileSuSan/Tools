@@ -4,3 +4,10 @@ E:\Project\AccountBookManage\COMMON\obj\Debug\SC.Properties.Resources.resources
 E:\Project\AccountBookManage\COMMON\obj\Debug\COMMON.csproj.GenerateResource.Cache
 E:\Project\AccountBookManage\COMMON\obj\Debug\COMMON.dll
 E:\Project\AccountBookManage\COMMON\obj\Debug\COMMON.pdb
+E:\Project\GitHub\Tools\Tools\DLL\COMMON.dll
+E:\Project\GitHub\Tools\Tools\DLL\COMMON.pdb
+E:\Project\GitHub\Tools\Tools\COMMON\obj\Debug\COMMON.csprojResolveAssemblyReference.cache
+E:\Project\GitHub\Tools\Tools\COMMON\obj\Debug\SC.Properties.Resources.resources
+E:\Project\GitHub\Tools\Tools\COMMON\obj\Debug\COMMON.csproj.GenerateResource.Cache
+E:\Project\GitHub\Tools\Tools\COMMON\obj\Debug\COMMON.dll
+E:\Project\GitHub\Tools\Tools\COMMON\obj\Debug\COMMON.pdb

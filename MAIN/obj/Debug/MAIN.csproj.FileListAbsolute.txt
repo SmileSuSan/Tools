@@ -22,3 +22,12 @@ E:\Project\AccountBookManage\MAIN\obj\Debug\MAIN.csproj.GenerateResource.Cache
 E:\Project\AccountBookManage\MAIN\obj\Debug\MAIN.dll.licenses
 E:\Project\AccountBookManage\MAIN\obj\Debug\MAIN.dll
 E:\Project\AccountBookManage\MAIN\obj\Debug\MAIN.pdb
+E:\Project\GitHub\Tools\Tools\Login\bin\Debug\MAIN.dll
+E:\Project\GitHub\Tools\Tools\Login\bin\Debug\MAIN.pdb
+E:\Project\GitHub\Tools\Tools\MAIN\obj\Debug\MAIN.csprojResolveAssemblyReference.cache
+E:\Project\GitHub\Tools\Tools\MAIN\obj\Debug\SC.FrmMain.resources
+E:\Project\GitHub\Tools\Tools\MAIN\obj\Debug\SC.Properties.Resources.resources
+E:\Project\GitHub\Tools\Tools\MAIN\obj\Debug\MAIN.csproj.GenerateResource.Cache
+E:\Project\GitHub\Tools\Tools\MAIN\obj\Debug\MAIN.dll.licenses
+E:\Project\GitHub\Tools\Tools\MAIN\obj\Debug\MAIN.dll
+E:\Project\GitHub\Tools\Tools\MAIN\obj\Debug\MAIN.pdb
